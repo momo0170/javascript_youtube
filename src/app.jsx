@@ -1,24 +1,24 @@
-import React, { Component } from 'react';
+import React from 'react';
+import { useEffect, useState } from 'react';
+import VideoList from './components/video_list/video_list';
 
-class App extends Component {
-  state = {
-    count: 0,
-  };
-  render() {
-    return (
-      <>
-        <span>{this.state.count}</span>
-        <button
-          onClick={() => {
-            this.setState((state) => {
-              return { count: state.count + 1 };
-            });
-          }}
-        >
-          Click
-        </button>
-      </>
-    );
-  }
+function App() {
+  const [videos, setVideos] = useState([]);
+  useEffect(() => {
+    const requestOptions = {
+      method: 'GET',
+      redirect: 'follow',
+    };
+
+    fetch(
+      'https://youtube.googleapis.com/youtube/v3/videos?part=snippet&chart=mostPopular&maxResults=25&key=AIzaSyDuHpbqM5TukVX_46jz6_ii0gus5XQxmqY',
+      requestOptions
+    )
+      .then((response) => response.json())
+      .then((result) => setVideos(result.items))
+      .catch((error) => console.log('error', error));
+  }, []);
+  return <VideoList videos={videos} />;
 }
+
 export default App;
